@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine SuciLove</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mengganti font untuk yang lebih mudah dibaca -->
+    <link href="https://files.catbox.moe/9ebs21.jpg" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink: #ff4d6d;
+            --pink-light: #ff8fa3;
+            --pink-lighter: #ffccd5;
+            --dark: #590d22;
+            --light: #fff0f3;
+            --gold: #ffd700;
+            --blue: #4d94ff;
+            --blue-light: #66b3ff;
+        }
+
+        body {
+            font-family: 'Inter', 'Nunito', 'Poppins', sans-serif;
+            background: var(--dark);
+            color: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background efek */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 77, 109, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 143, 163, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 204, 213, 0.08) 0%, transparent 50%);
+        }
+
+        .floating {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: floatUp 20s linear infinite;
+            color: var(--pink);
+            text-shadow: 0 0 10px currentColor;
+            z-index: -1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; transform: scale(1); }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100px) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .music-player.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .music-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink), #ff3366);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        .music-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.6);
+        }
+
+        .music-info {
+            font-size: 0.9rem;
+            color: var(--pink-lighter);
+            max-width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Halaman */
+        .page {
+            position: absolute;
+            width: 90%;
+            max-width: 1100px;
+            min-height: 70vh;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: none;
+            flex-direction: column;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            margin-top: 20px;
+            margin-bottom: 80px; /* Memberikan ruang untuk navigasi */
+        }
+
+        .page.active {
+            display: flex;
+            transform: scale(1);
+            opacity: 1;
+            animation: pageIn 0.8s forwards;
+        }
+
+        @keyframes pageIn {
+            0% { transform: translateY(50px) scale(0.9); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .page-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--pink), transparent);
+            border-radius: 2px;
+        }
+
+        /* Mengganti font untuk yang lebih mudah dibaca */
+        .page-title {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 3rem;
+            color: var(--pink);
+            margin-bottom: 15px;
+            text-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+            position: relative;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--pink), transparent);
+        }
+
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: var(--pink-lighter);
+            font-weight: 400;
+            font-family: 'Nunito', 'Poppins', sans-serif;
+        }
+
+        /* Konten */
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 10px 15px 5px;
+            position: relative;
+        }
+
+        .page-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .page-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .page-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--pink), var(--pink-light));
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Navigasi - PERBAIKAN POSISI */
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+            opacity: 1;
+            transition: all 0.5s;
+            background: rgba(89, 13, 34, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-btn:hover:before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            background: var(--pink);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 77, 109, 0.5);
+            border-color: var(--pink);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--pink), #ff3366);
+            box-shadow: 0 0 20px var(--pink), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px) scale(1.05);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px var(--pink); }
+            50% { box-shadow: 0 0 30px var(--pink); }
+            100% { box-shadow: 0 0 20px var(--pink); }
+        }
+
+        .nav-tooltip {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-btn:hover .nav-tooltip {
+            opacity: 1;
+        }
+
+        /* ==================== HALAMAN 1: LANDING ==================== */
+        #landing {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            min-height: 60vh;
+        }
+
+        .hero {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px var(--pink),
+                         0 0 60px var(--pink),
+                         0 0 90px var(--pink);
+            animation: glow 3s infinite alternate, float 6s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 15px var(--pink), 0 0 30px var(--pink), 0 0 45px var(--pink); }
+            100% { text-shadow: 0 0 25px var(--pink), 0 0 50px var(--pink), 0 0 75px var(--pink); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .hero-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+            color: var(--pink);
+            margin-bottom: 20px;
+            display: inline-block;
+            position: relative;
+            padding: 0 50px;
+            animation: nameGlow 4s infinite alternate;
+        }
+
+        @keyframes nameGlow {
+            0% { color: var(--pink); text-shadow: 0 0 15px var(--pink); }
+            100% { color: var(--pink-light); text-shadow: 0 0 30px var(--pink-light); }
+        }
+
+        .hero-name:before,
+        .hero-name:after {
+            font-family: 'Font Awesome 6 Free';
+            content: '\f004';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            color: var(--pink);
+            animation: heartBeat 1.5s infinite;
+            text-shadow: 0 0 15px var(--pink);
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        .hero-name:before { left: 0; }
+        .hero-name:after { right: 0; }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            color: var(--pink-lighter);
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+        }
+
+        /* Tombol dengan ikon mail */
+        .start-button {
+            background: linear-gradient(135deg, var(--pink), #ff3366, var(--pink-light));
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            padding: 22px 60px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: gradientMove 3s infinite alternate, pulse 2s infinite;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .start-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(255, 77, 109, 0.7),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            animation: none;
+            letter-spacing: 1.5px;
+        }
+
+        .start-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.7s;
+        }
+
+        .start-button:hover:before {
+            left: 100%;
+        }
+
+        /* Tombol baru untuk stopwatch - AWALNYA DISEMBUNYIKAN */
+        .stopwatch-button {
+            background: linear-gradient(135deg, var(--blue), var(--blue-light));
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 12px 35px rgba(77, 148, 255, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: gradientMoveBlue 3s infinite alternate;
+            letter-spacing: 1px;
+            display: none; /* Awalnya disembunyikan */
+            margin-top: 15px;
+        }
+
+        @keyframes gradientMoveBlue {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .stopwatch-button:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(77, 148, 255, 0.6),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            animation: none;
+            letter-spacing: 1.2px;
+        }
+
+        .stopwatch-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.7s;
+        }
+
+        .stopwatch-button:hover:before {
+            left: 100%;
+        }
+
+        /* ==================== HALAMAN 2: VALENTINE ==================== */
+        .valentine-content {
+            text-align: center;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* Mengganti font untuk yang lebih mudah dibaca */
+        .valentine-text {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 1.6rem;
+            color: var(--pink-lighter);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            text-align: justify;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .valentine-heart {
+            font-size: 3.5rem;
+            color: var(--pink);
+            margin: 25px 0;
+            animation: heartbeat 1.5s infinite;
+            text-shadow: 0 0 15px var(--pink);
+        }
+
+        /* ==================== HALAMAN 3: KATA-KATA SPESIAL ==================== */
+        .message-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px 20px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 77, 109, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .message-card:hover:before {
+            opacity: 1;
+        }
+
+        .message-card:hover {
+            background: rgba(255, 77, 109, 0.15);
+            border-color: var(--pink);
+            transform: translateY(-8px) rotate(3deg) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+                        0 0 25px rgba(255, 77, 109, 0.3);
+        }
+
+        .message-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .message-btn i {
+            font-size: 3.5rem;
+            color: var(--pink);
+            margin-bottom: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 12px var(--pink);
+        }
+
+        .message-btn:hover i {
+            transform: scale(1.2) rotate(15deg);
+            color: var(--pink-light);
+            text-shadow: 0 0 25px var(--pink-light);
+        }
+
+        /* Pesan muncul di bawah tombol yang diklik */
+        .message-display {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 77, 109, 0.1), rgba(255, 143, 163, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid var(--pink);
+            display: none;
+            animation: fadeInUp 0.6s forwards;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mengganti font untuk yang lebih mudah dibaca */
+        .message-content {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 1.2rem;
+            color: var(--pink-lighter);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* ==================== HALAMAN 4: GALERI SUCI ==================== */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .photo-card {
+            aspect-ratio: 3/4;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid transparent;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-12px) scale(1.03) rotate(2deg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6),
+                        0 0 35px rgba(255, 77, 109, 0.4);
+            border-color: var(--pink);
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .photo-card:hover .photo-img {
+            transform: scale(1.08);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.6s ease;
+        }
+
+        .photo-card:hover .photo-overlay {
+            transform: translateY(0);
+        }
+
+        .photo-text {
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        /* ==================== HALAMAN 5: CINTA (DIGANTI MENJADI MAIL ICON) ==================== */
+        .love-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            position: relative;
+        }
+
+        /* Ganti dari hati ke mail icon */
+        .mail-icon-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mail-icon {
+            font-size: 10rem;
+            color: var(--pink);
+            animation: mailFloat 3s ease-in-out infinite;
+            text-shadow: 0 0 35px var(--pink);
+            filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.5));
+        }
+
+        @keyframes mailFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Mengganti font untuk yang lebih mudah dibaca */
+        .love-message {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            text-align: center;
+            font-size: 1.8rem;
+            color: var(--pink-lighter);
+            line-height: 1.6;
+            max-width: 900px;
+            margin-top: 40px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: textGlow 3s infinite alternate;
+            font-weight: 400;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 8px rgba(255, 77, 109, 0.5); }
+            100% { text-shadow: 0 0 15px rgba(255, 77, 109, 0.8); }
+        }
+
+        /* ==================== HALAMAN 6: STOPWATCH BARU ==================== */
+        .stopwatch-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+
+        .stopwatch-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 35px 0;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 25px 15px;
+            min-width: 130px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .time-unit:hover {
+            transform: translateY(-8px);
+            border-color: var(--blue);
+            box-shadow: 0 15px 35px rgba(77, 148, 255, 0.4);
+        }
+
+        .time-unit span {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 4rem;
+            color: var(--blue);
+            text-shadow: 0 0 15px rgba(77, 148, 255, 0.5);
+            display: block;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            color: var(--blue-light);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .stopwatch-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            color: var(--pink);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .stopwatch-subtitle {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            color: var(--pink-lighter);
+            margin-bottom: 30px;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        .relationship-date {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            color: var(--gold);
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* ==================== HALAMAN 7: SURPRISE ==================== */
+        .surprise-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            position: relative;
+        }
+
+        .fireworks {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            margin: 40px 0;
+        }
+
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--pink);
+            box-shadow: 0 0 12px var(--pink);
+        }
+
+        /* Mengganti font untuk yang lebih mudah dibaca */
+        .final-message {
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 1.8rem;
+            color: var(--pink-lighter);
+            line-height: 1.6;
+            max-width: 900px;
+            margin-bottom: 40px;
+            animation: fadeInOut 4s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .restart-btn {
+            background: transparent;
+            border: 3px solid var(--pink);
+            color: var(--pink);
+            padding: 18px 45px;
+            font-size: 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .restart-btn:hover {
+            background: var(--pink);
+            color: white;
+            box-shadow: 0 0 40px var(--pink),
+                        inset 0 0 15px rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px) scale(1.05);
+            letter-spacing: 1.5px;
+        }
+
+        .restart-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.7s;
+        }
+
+        .restart-btn:hover:before {
+            left: 100%;
+        }
+
+        /* Responsive Design - PERBAIKAN BESAR */
+        @media (max-width: 1200px) {
+            .page { width: 95%; }
+            .hero-title { font-size: 3.5rem; }
+            .hero-name { font-size: 3rem; padding: 0 45px; }
+            .hero-name:before, .hero-name:after { font-size: 2.5rem; }
+            .valentine-text { font-size: 1.5rem; }
+            .time-unit span { font-size: 3.5rem; }
+            .time-unit { min-width: 120px; padding: 20px 12px; }
+        }
+
+        @media (max-width: 992px) {
+            .page { padding: 30px; }
+            .page-title { font-size: 2.5rem; }
+            .hero-title { font-size: 3rem; }
+            .hero-name { font-size: 2.5rem; padding: 0 40px; }
+            .hero-name:before, .hero-name:after { font-size: 2rem; }
+            .valentine-text { font-size: 1.4rem; padding: 0 15px; }
+            .message-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .gallery { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .mail-icon { font-size: 8rem; }
+            .mail-icon-container { width: 180px; height: 180px; margin: 30px; }
+            .time-unit { min-width: 110px; padding: 18px 10px; }
+            .time-unit span { font-size: 3rem; }
+            .time-label { font-size: 1.2rem; }
+            .nav-container { gap: 12px; padding: 8px 12px; }
+            .nav-btn { width: 45px; height: 45px; font-size: 1.3rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .page { 
+                padding: 25px; 
+                width: 100%;
+                margin-bottom: 100px; /* Lebih banyak ruang untuk navigasi */
+            }
+            .page-title { font-size: 2.2rem; }
+            .hero-title { font-size: 2.8rem; }
+            .hero-name { font-size: 2.3rem; padding: 0 35px; }
+            .hero-name:before, .hero-name:after { font-size: 1.8rem; }
+            .hero-subtitle { font-size: 1.4rem; margin-bottom: 25px; }
+            .start-button { padding: 20px 50px; font-size: 1.4rem; margin-bottom: 12px; }
+            .stopwatch-button { padding: 16px 40px; font-size: 1.2rem; margin-top: 12px; }
+            .valentine-text { font-size: 1.3rem; padding: 0 10px; }
+            .message-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+            .message-card { height: 140px; padding: 20px 15px; }
+            .message-btn i { font-size: 3rem; }
+            .gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+            .mail-icon-container { width: 160px; height: 160px; margin: 25px; }
+            .mail-icon { font-size: 7rem; }
+            .stopwatch-display { gap: 20px; }
+            .time-unit { min-width: 90px; padding: 15px 8px; }
+            .time-unit span { font-size: 2.8rem; }
+            .time-label { font-size: 1.1rem; }
+            .stopwatch-title { font-size: 2rem; }
+            .stopwatch-subtitle { font-size: 1.3rem; }
+            .relationship-date { font-size: 1.4rem; padding: 10px 20px; }
+            .nav-container { 
+                bottom: 15px; 
+                gap: 10px; 
+                padding: 8px 10px; 
+                max-width: 95%; 
+                border-radius: 40px;
+            }
+            .nav-btn { 
+                width: 45px; 
+                height: 45px; 
+                font-size: 1.2rem; 
+                min-width: 45px;
+            }
+            .music-player { 
+                bottom: 75px; 
+                left: 50%; 
+                transform: translateX(-50%); 
+                width: auto; 
+                min-width: 250px;
+            }
+            .love-message, .final-message { font-size: 1.6rem; margin-top: 30px; }
+        }
+
+        @media (max-width: 576px) {
+            .page { padding: 20px; margin-bottom: 110px; }
+            .page-title { font-size: 1.9rem; }
+            .hero-title { font-size: 2.4rem; }
+            .hero-name { font-size: 2rem; padding: 0 30px; }
+            .hero-name:before, .hero-name:after { font-size: 1.5rem; }
+            .hero-subtitle { font-size: 1.2rem; margin-bottom: 20px; }
+            .start-button { padding: 18px 40px; font-size: 1.2rem; margin-bottom: 10px; }
+            .stopwatch-button { padding: 14px 35px; font-size: 1.1rem; margin-top: 10px; }
+            .valentine-text { font-size: 1.1rem; line-height: 1.6; }
+            .message-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+            .message-card { height: 120px; padding: 15px 10px; }
+            .message-btn i { font-size: 2.5rem; }
+            .gallery { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+            .mail-icon-container { width: 140px; height: 140px; margin: 20px; }
+            .mail-icon { font-size: 6rem; }
+            .stopwatch-display { gap: 15px; }
+            .time-unit { min-width: 75px; padding: 12px 6px; }
+            .time-unit span { font-size: 2.2rem; }
+            .time-label { font-size: 0.9rem; }
+            .stopwatch-title { font-size: 1.8rem; }
+            .stopwatch-subtitle { font-size: 1.1rem; }
+            .relationship-date { font-size: 1.2rem; padding: 8px 15px; }
+            .nav-container { 
+                bottom: 10px; 
+                gap: 8px; 
+                padding: 6px 8px; 
+                max-width: 98%;
+                border-radius: 35px;
+            }
+            .nav-btn { 
+                width: 40px; 
+                height: 40px; 
+                font-size: 1.1rem; 
+                min-width: 40px;
+            }
+            .nav-tooltip {
+                bottom: 45px;
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+            .music-player { 
+                bottom: 70px; 
+                padding: 10px 20px;
+                min-width: 220px;
+            }
+            .love-message, .final-message { font-size: 1.4rem; margin-top: 20px; }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title { font-size: 2rem; }
+            .hero-name { font-size: 1.7rem; }
+            .page-title { font-size: 1.7rem; }
+            .message-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
+            .gallery { grid-template-columns: 1fr; }
+            .stopwatch-display { gap: 10px; }
+            .time-unit { min-width: 65px; padding: 10px 5px; }
+            .time-unit span { font-size: 1.8rem; }
+            .time-label { font-size: 0.8rem; }
+            .nav-container { gap: 5px; }
+            .nav-btn { width: 38px; height: 38px; font-size: 1rem; min-width: 38px; }
+        }
+
+        /* Perbaikan untuk gambar yang tidak muncul */
+        .photo-img {
+            display: block;
+            background-color: rgba(255, 77, 109, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background efek -->
+    <div class="bg-effects" id="bgEffects"></div>
+    
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <button class="music-btn" id="playBtn">
+            <i class="fas fa-play"></i>
+        </button>
+        <div class="music-info" id="songTitle">Sempurna</div>
+        <audio id="backgroundMusic" loop>
+            <source src="assets/sempurna.mp3" type="audio/mpeg">
+            <source src="assets/sempurna.ogg" type="audio/ogg">
+            Browser Anda tidak mendukung audio.
+        </audio>
+    </div>
+    
+    <!-- Container utama -->
+    <div class="container">
+        <!-- Halaman 1: Landing -->
+        <div class="page active" id="landing">
+            <div class="hero">
+                <h1 class="hero-title">Happy Valentine</h1>
+                <div class="hero-name">Suci Aulia Ramadhan</div>
+                <p class="hero-subtitle">Website ini khusus buat kamu. Liat sampe akhir yaa.</p>
+                <button class="start-button" id="startButton">
+                    <i class="fas fa-envelope"></i> Buka Surat
+                </button>
+                <!-- Tombol baru yang akan muncul setelah tombol "Buka Surat" diklik -->
+                <button class="stopwatch-button" id="stopwatchButton">
+                    <i class="fas fa-clock"></i> Waktu Hubungan Kita
+                </button>
+            </div>
+        </div>
+        
+        <!-- Halaman 2: Valentine -->
+        <div class="page" id="valentine">
+            <div class="page-header">
+                <h2 class="page-title">Surat Valentine</h2>
+                <p class="page-subtitle">Buat Suci, cewe tersayang saya</p>
+            </div>
+            <div class="page-content">
+                <div class="valentine-content">
+                    <div class="valentine-heart">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <p class="valentine-text">
+                        Hai Suci,<br><br>
+                        Di hari Valentine ini, saya pengen ngungkapin betapa spesialnya kamu buat saya. Kamu tuh kayak keajaiban yang gak pernah saya duga bakal datang ke hidup saya. Setiap hari sama kamu itu penuh warna, tawa, dan kebahagiaan.<br><br>
+                        Saya masih inget banget pertama kali ketemu kamu. Dari situ, hidup saya berubah 180 derajat. Kamu bikin saya belajar arti cinta yang sebenernya. Cinta yang tulus, yang gak pamrih, yang bikin pengen jadi lebih baik setiap harinya.<br><br>
+                        Valentine tahun ini spesial banget karena bisa merayakannya bareng kamu. Gak ada yang lebih saya pengen selain lihat kamu tersenyum dan bahagia. Kamu deserve semua yang terbaik di dunia ini.<br><br>
+                        Saya janji akan selalu jaga perasaan kamu, hargai kamu, dan buat kamu bahagia. Kamu bukan cuma pacar, tapi juga temen, partner, dan orang terpenting dalam hidup saya.<br><br>
+                        Terima kasih udah jadi wanita terbaik buat saya. Saya sayang kamu lebih dari apapun.
+                    </p>
+                    <div class="valentine-heart">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Halaman 3: Kata-kata Spesial -->
+        <div class="page" id="kata">
+            <div class="page-header">
+                <h2 class="page-title">Kata-Kata Spesial</h2>
+                <p class="page-subtitle">Klik ikon hati untuk pesan spesial!</p>
+            </div>
+            <div class="page-content">
+                <div class="message-grid" id="messageGrid">
+                    <!-- Kartu pesan akan diisi oleh JavaScript -->
+                </div>
+                <div id="messageDisplayContainer"></div>
+            </div>
+        </div>
+        
+        <!-- Halaman 4: Galeri Suci -->
+        <div class="page" id="foto">
+            <div class="page-header">
+                <h2 class="page-title">Galeri Suci</h2>
+                <p class="page-subtitle">Foto-foto cantik kamu</p>
+            </div>
+            <div class="page-content">
+                <div class="gallery" id="gallery">
+                    <!-- Foto akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Halaman 5: Cinta (DIUBAH DARI LOVE HEART KE MAIL ICON) -->
+        <div class="page" id="cinta">
+            <div class="page-header">
+                <h2 class="page-title">Untuk Suci</h2>
+                <p class="page-subtitle">Kata kata hari ini</p>
+            </div>
+            <div class="page-content">
+                <div class="love-display">
+                    <!-- Ganti dari love heart ke mail icon -->
+                    <div class="mail-icon-container">
+                        <i class="fas fa-envelope mail-icon"></i>
+                    </div>
+                    <p class="love-message" id="loveMessage">Loading pesan cinta...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- HALAMAN BARU 6: Stopwatch -->
+        <div class="page" id="stopwatch">
+            <div class="page-header">
+                <h2 class="page-title">Waktu Hubungan Kita</h2>
+                <p class="page-subtitle">Sejak 1 Desember 2025</p>
+            </div>
+            <div class="page-content">
+                <div class="stopwatch-content">
+                    <h3 class="stopwatch-title">I Love You Forever</h3>
+                    <p class="stopwatch-subtitle">Ini adalah waktu yang telah kita lewati bersama sejak hari pertama hubungan kita dimulai</p>
+                    
+                    <div class="stopwatch-display">
+                        <div class="time-unit">
+                            <span id="days">0</span>
+                            <div class="time-label">Hari</div>
+                        </div>
+                        <div class="time-unit">
+                            <span id="hours">0</span>
+                            <div class="time-label">Jam</div>
+                        </div>
+                        <div class="time-unit">
+                            <span id="minutes">0</span>
+                            <div class="time-label">Menit</div>
+                        </div>
+                        <div class="time-unit">
+                            <span id="seconds">0</span>
+                            <div class="time-label">Detik</div>
+                        </div>
+                    </div>
+                    
+                    <div class="relationship-date">
+                        <i class="fas fa-calendar-alt"></i> Dimulai sejak: 1 Desember 2025
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Halaman 7: Surprise (sekarang jadi halaman 7) -->
+        <div class="page" id="surprise">
+            <div class="page-header">
+                <h2 class="page-title">Kejutan Terakhir</h2>
+                <p class="page-subtitle">Ini spesial banget buat kamu</p>
+            </div>
+            <div class="page-content">
+                <div class="surprise-content">
+                    <div class="fireworks" id="fireworks"></div>
+                    <p class="final-message" id="finalMessage">Loading pesan terakhir...</p>
+                    <button class="restart-btn" id="restartButton">
+                        <i class="fas fa-redo"></i> Lihat Lagi Dari Awal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigasi (SELALU TAMPIL) - DITAMBAHKAN TOMBOL UNTUK STOPWATCH -->
+    <div class="nav-container" id="navContainer">
+        <button class="nav-btn active" id="nav1" data-page="landing">
+            <i class="fas fa-home"></i>
+            <span class="nav-tooltip">Home</span>
+        </button>
+        <button class="nav-btn" id="nav2" data-page="valentine">
+            <i class="fas fa-heart"></i>
+            <span class="nav-tooltip">Valentine</span>
+        </button>
+        <button class="nav-btn" id="nav3" data-page="kata">
+            <i class="fas fa-comment-dots"></i>
+            <span class="nav-tooltip">Kata-kata</span>
+        </button>
+        <button class="nav-btn" id="nav4" data-page="foto">
+            <i class="fas fa-images"></i>
+            <span class="nav-tooltip">Foto</span>
+        </button>
+        <button class="nav-btn" id="nav5" data-page="cinta">
+            <i class="fas fa-heartbeat"></i>
+            <span class="nav-tooltip">Cinta</span>
+        </button>
+        <!-- Tombol navigasi baru untuk stopwatch -->
+        <button class="nav-btn" id="nav6" data-page="stopwatch">
+            <i class="fas fa-clock"></i>
+            <span class="nav-tooltip">Stopwatch</span>
+        </button>
+        <!-- Tombol surprise sekarang jadi nav7 -->
+        <button class="nav-btn" id="nav7" data-page="surprise">
+            <i class="fas fa-gift"></i>
+            <span class="nav-tooltip">Surprise</span>
+        </button>
+    </div>
+
+    <script>
+        // Data kata-kata spesial (20 tombol hanya ikon)
+        const messagesData = [
+            {
+                icon: "fas fa-heart",
+                messages: [
+                    "Saya sayang banget sama kamu, Gak ada yang bisa ngalahin perasaan saya ke kamu.",
+                    "Kamu tuh berarti banget buat saya. Setiap hari, setiap detik, saya mikirin kamu.",
+                    "Kamu tuh kayak bintang di langit malam. Terang dan selalu bikin saya kagum.",
+                    "Saya gak pernah nyangka bakal jatuh cinta se-dalem ini. Semua karena kamu.",
+                    "Kalo kamu tanya seberapa sayang saya ke kamu, jawabannya: lebih dari apapun di dunia ini!"
+                ]
+            },
+            {
+                icon: "fas fa-star",
+                messages: [
+                    "Kamu tuh spesial banget, Gak ada yang bisa nandingin kamu di hati saya.",
+                    "Setiap hal tentang kamu tuh unik dan bikin saya jatuh cinta lagi setiap hari.",
+                    "Dunia ini tuh biasa aja sebelum kamu dateng. Sekarang semuanya jadi luar biasa.",
+                    "Kamu tuh kayak keajaiban yang gak pernah saya duga bakal datang ke hidup saya.",
+                    "Di antara miliaran orang di dunia, kamu tuh yang paling spesial buat saya."
+                ]
+            },
+            {
+                icon: "fas fa-smile",
+                messages: [
+                    "Senyum kamu tuh obat paling ampuh buat semua masalah saya.",
+                    "Setiap kali kamu ketawa, dunia saya langsung cerah. Serius, itu keajaiban.",
+                    "Saya suka banget liat kamu seneng. Itu bikin hari-hari saya jadi lebih berwarna.",
+                    "Kalo kamu lagi bete, saya juga ikutan bete. Kalo kamu seneng, saya juga seneng.",
+                    "Kamu tuh sumber kebahagiaan saya. Gak ada yang bisa gantikan perasaan seneng bareng kamu."
+                ]
+            },
+            {
+                icon: "fas fa-moon",
+                messages: [
+                    "Setiap malem saya selalu mimpiin kamu. Mimpi terindah saya selalu tentang kamu.",
+                    "Kalo boleh milih, saya pengen tidur dan bangun selamanya di mimpi yang ada kamu.",
+                    "Saya sering kebayang masa depan kita bareng-bareng. Dan itu bikin saya semangat banget.",
+                    "Impian terbesar saya tuh bisa bikin kamu bahagia setiap hari, sekarang dan selamanya.",
+                    "Kamu tuh kayak mimpi yang jadi kenyataan. Dan saya gak mau bangun dari mimpi ini."
+                ]
+            },
+            {
+                icon: "fas fa-sun",
+                messages: [
+                    "Kamu tuh kayak matahari buat hidup saya. Terangin semua yang gelap.",
+                    "Sebelum kenal kamu, hidup saya biasa aja. Sekarang, semuanya jadi lebih berarti.",
+                    "Kamu bikin saya pengen jadi lebih baik setiap hari. Karena kamu layak dapetin yang terbaik.",
+                    "Di hari-hari yang sulit, inget kamu tuh selalu bikin saya kuat dan semangat lagi.",
+                    "Kamu tuh cahaya yang bikin hidup saya jadi indah. Terima kasih udah datang ke hidup saya."
+                ]
+            },
+            {
+                icon: "fas fa-gem",
+                messages: [
+                    "Kamu tuh lebih berharga dari apapun di dunia ini. Serius, gak ada bandingannya.",
+                    "Saya akan jaga kamu kayak harta karun paling berharga yang pernah saya punya.",
+                    "Setiap momen sama kamu tuh berharga banget. Saya simpen baik-baik di memori.",
+                    "Kamu tuh permata langka yang gak semua orang bisa dapetin. Dan saya bersyukur banget punya kamu.",
+                    "Gak ada harta atau apapun yang bisa nandingin nilai kamu di hidup saya."
+                ]
+            },
+            {
+                icon: "fas fa-heartbeat",
+                messages: [
+                    "Jantung saya berdebar kencang setiap kali inget kamu. Itu bukti cinta saya tuh nyata.",
+                    "Perasaan saya ke kamu tuh dalem banget. Lebih dalem dari laut yang paling dalam.",
+                    "Saya cinta kamu dari hati yang paling dalam. Gak ada yang bisa ngubah itu.",
+                    "Setiap detak jantung saya berbisik nama kamu. Kamu udah jadi bagian dari hidup saya.",
+                    "Cinta saya ke kamu tuh gak cuma kata-kata. Itu perasaan yang tulus dari dalam hati."
+                ]
+            },
+            {
+                icon: "fas fa-crown",
+                messages: [
+                    "Kamu tuh ratu di hidup saya. Selalu di tempat paling tinggi di hati saya.",
+                    "Saya akan perlakukan kamu kayak ratu setiap hari. Kamu layak dapetin yang terbaik.",
+                    "Di mata saya, kamu tuh yang paling cantik, paling baik, paling sempurna.",
+                    "Kamu memerintah hati saya dengan begitu mudah. Dan saya seneng jadi 'rakyat' kamu.",
+                    "Sebagai ratu di hati saya, kamu punya kekuasaan penuh atas perasaan saya."
+                ]
+            },
+            {
+                icon: "fas fa-music",
+                messages: [
+                    "Hidup saya sebelum kamu kayak musik tanpa nada. Sekarang jadi harmoni yang indah.",
+                    "Kita berdua kayak duet yang sempurna. Selaras dalam banyak hal.",
+                    "Setiap kebersamaan kita tuh kayak melodi indah yang gak pernah bosan didengerin.",
+                    "Kamu bikin hidup saya punya irama yang indah. Semuanya jadi lebih berwarna.",
+                    "Bareng kamu, bahkan hari-hari biasa jadi kayak lagu yang indah."
+                ]
+            },
+            {
+                icon: "fas fa-rainbow",
+                messages: [
+                    "Kamu bawa semua warna pelangi ke hidup saya yang dulu cuma hitam putih.",
+                    "Setiap hari sama kamu tuh penuh warna. Gak pernah membosankan.",
+                    "Kamu tuh palet warna yang bikin hidup saya jadi karya seni yang indah.",
+                    "Sebelum kamu, hidup saya biasa aja. Sekarang, semuanya jadi lebih berwarna dan indah.",
+                    "Kamu lukis hidup saya dengan warna-warna yang paling cantik."
+                ]
+            },
+            {
+                icon: "fas fa-cloud",
+                messages: [
+                    "Bareng kamu tuh rasanya kayak lagi di awan. Nyaman banget dan bikin tenang.",
+                    "Kamu tuh tempat paling nyaman buat saya. Tempat saya bisa jadi diri sendiri.",
+                    "Di samping kamu, semua masalah jadi kayak gak berat. Kamu bikin semuanya lebih mudah.",
+                    "Saya bisa cerita apapun ke kamu tanpa takut dijudge. Itu berharga banget buat saya.",
+                    "Kamu tuh kayak rumah buat hati saya. Tempat yang selalu pengen saya pulang."
+                ]
+            },
+            {
+                icon: "fas fa-bolt",
+                messages: [
+                    "Kamu tuh sumber semangat saya. Bikin saya pengen jadi lebih baik setiap hari.",
+                    "Setiap kali liat kamu, saya jadi punya energi buat hadapin apapun.",
+                    "Kamu inspire saya buat jadi versi terbaik dari diri saya sendiri.",
+                    "Bareng kamu, saya jadi lebih semangat ngejalanin hidup. Semuanya jadi lebih berarti.",
+                    "Kamu kasih saya kekuatan buat hadapin semua tantangan. Kamu partner terbaik."
+                ]
+            },
+            {
+                icon: "fas fa-anchor",
+                messages: [
+                    "Kamu tuh kayak jangkar buat hidup saya. Bikin saya tetap stabil di tengah badai.",
+                    "Di saat saya goyah, kamu selalu jadi penopang yang kuat buat saya.",
+                    "Kamu pegang saya tetap di tanah saat saya kebanyakan melayang.",
+                    "Berkat kamu, saya jadi lebih kuat dan gak gampang goyah.",
+                    "Kamu tuh fondasi yang bikin saya bisa berdiri tegak. Terima kasih udah selalu ada."
+                ]
+            },
+            {
+                icon: "fas fa-compass",
+                messages: [
+                    "Kamu tuh kayak kompas buat hidup saya. Nunjukin arah yang bener.",
+                    "Sebelum kenal kamu, saya kayak lagi tersesat. Sekarang saya tau jalan yang harus ditempuh.",
+                    "Kamu bimbing saya ke jalan yang lebih baik. Kamu inspirasinya.",
+                    "Setiap kali bingung, inget kamu selalu bikin saya tau harus ngapain.",
+                    "Berkat kamu, hidup saya punya tujuan yang jelas. Kamu bintang penunjuknya."
+                ]
+            },
+            {
+                icon: "fas fa-infinity",
+                messages: [
+                    "Cinta saya ke kamu tuh gak ada batasnya. Tak terhingga kayak angka infinity.",
+                    "Saya akan cinta kamu selamanya. Gak ada akhirnya, kayak lingkaran yang sempurna.",
+                    "Perasaan saya ke kamu tuh gak bisa diukur. Lebih besar dari apapun yang bisa dibayangin.",
+                    "Kalo ada yang tanya sampai kapan saya sayang kamu, jawabannya: selamanya.",
+                    "Cinta saya tuh infinity buat kamu. Tak terbatas dan tak akan pernah habis."
+                ]
+            },
+            {
+                icon: "fas fa-shield-heart",
+                messages: [
+                    "Saya akan selalu lindungi kamu. Dari apa aja dan siapapun.",
+                    "Kamu tuh prioritas utama saya. Selalu dan akan terus begitu.",
+                    "Saya janji akan jadi tempat yang aman buat kamu. Tempat kamu bisa percaya sepenuhnya.",
+                    "Dengan kamu, saya punya alasan buat jadi lebih kuat. Buat bisa jaga kamu dengan baik.",
+                    "Saya akan jadi tameng buat kamu dari semua hal buruk di dunia ini."
+                ]
+            },
+            {
+                icon: "fas fa-seedling",
+                messages: [
+                    "Cinta kita tuh kayak tanaman yang terus tumbuh. Semakin lama semakin kuat akarnya.",
+                    "Bersama kamu, saya belajar banyak hal dan tumbuh jadi pribadi yang lebih baik.",
+                    "Kita tumbuh bersama, belajar bersama, dan menjadi lebih baik bersama.",
+                    "Setiap hari bareng kamu adalah kesempatan buat tumbuh dan berkembang bersama.",
+                    "Cinta kita gak cuma diam di tempat. Dia hidup, bernafas, dan terus berkembang."
+                ]
+            },
+            {
+                icon: "fas fa-clock",
+                messages: [
+                    "Waktu bareng kamu tuh selalu berasa cepet banget. Pengennya lama-lama.",
+                    "Saya paling suka saat-saat santai bareng kamu. Itu yang paling berharga.",
+                    "Gak peduli apa yang kita lakuin, yang penting kita lakuin bareng-bareng.",
+                    "Setiap detik bareng kamu tuh spesial. Dari bangun tidur sampe tidur lagi.",
+                    "Saya pengen habiskan lebih banyak waktu bareng kamu. Selamanya kayaknya masih kurang."
+                ]
+            },
+            {
+                icon: "fas fa-hands-heart",
+                messages: [
+                    "Saya selalu peduli sama kamu. Perasaan kamu, kesehatan kamu, semuanya.",
+                    "Kalo kamu sakit, saya ikutan sakit. Kalo kamu seneng, saya ikutan seneng.",
+                    "Saya selalu perhatian ke hal-hal kecil tentang kamu. Karena itu yang bikin kamu spesial.",
+                    "Kamu selalu jadi prioritas utama saya. Selalu dan akan terus begitu.",
+                    "Saya akan selalu ada buat kamu, apapun yang terjadi. Janji saya."
+                ]
+            },
+            {
+                icon: "fas fa-fire",
+                messages: [
+                    "Cinta saya ke kamu tuh kayak api yang gak pernah padam. Selalu membara.",
+                    "Semangat saya buat kamu tuh gak pernah redup. Malah makin lama makin kuat.",
+                    "Kamu bikin jantung saya berdetak lebih kencang setiap hari. Seperti pertama kali ketemu.",
+                    "Cinta saya ke kamu tuh panas dan penuh gairah. Gak pernah dingin atau biasa aja.",
+                    "Setiap kali pegang tangan kamu, masih ada percikan yang sama seperti dulu."
+                ]
+            }
+        ];
+
+        // Data foto Suci (12 foto) - PERBAIKAN: Tambahkan placeholder jika gambar tidak ditemukan
+        const photosData = [
+            { filename: "suci1.jpg", caption: "Cantik" },
+            { filename: "suci2.jpg", caption: "Beautiful" },
+            { filename: "suci3.jpg", caption: "Pretty" },
+            { filename: "suci4.jpg", caption: "Love" },
+            { filename: "suci5.jpg", caption: "Bidadari" },
+            { filename: "suci6.jpg", caption: "Lucu" },
+            { filename: "suci7.jpg", caption: "Cantik" },
+            { filename: "suci8.jpg", caption: "Beautiful" },
+            { filename: "suci9.jpg", caption: "Pretty" },
+            { filename: "suci10.jpg", caption: "Love" },
+            { filename: "suci11.jpg", caption: "Bidadari" },
+            { filename: "suci12.jpg", caption: "Lucu" } 
+        ];
+
+        // Data pesan cinta
+        const loveMessages = [
+            "Kamu tuh artinya segalanya buat saya. Gak ada yang bisa gantikan posisi kamu di hati saya. Kamu adalah alasan saya bangun setiap pagi dengan senyuman.",
+            "Saya bersyukur banget tiap hari karena punya kamu. Kamu berkah terbesar dalam hidup saya. Terima kasih sudah jadi wanita terbaik untuk saya.",
+            "Cinta saya ke kamu tuh gak cuma perasaan biasa. Ini udah jadi bagian dari diri saya. Setiap nafas, setiap detak jantung, semuanya untuk kamu.",
+            "Saya janji akan selalu jaga perasaan kamu, hargai kamu, dan buat kamu bahagia. Kamu layak dapat semua yang terbaik di dunia ini."
+        ];
+
+        // Data pesan akhir
+        const finalMessages = [
+            "Terima kasih udah jadi bagian terindah dari hidup saya. Kamu tuh keajaiban yang gak pernah saya sangka bakal datang. Saya sayang kamu lebih dari apapun!",
+            "Semoga website sederhana ini bisa ngasih gambaran betapa spesialnya kamu buat saya. Ini cuma sebagian kecil dari perasaan saya yang sebenernya jauh lebih besar.",
+            "Happy Valentine, sayang Semoga kita bisa lewatin banyak Valentine lagi bareng-bareng dengan lebih banyak kebahagiaan dan kenangan indah.",
+            "Kamu tuh wanita paling kuat, cantik, dan baik yang pernah saya kenal. Saya bangga jadi pacar kamu. Terima kasih udah nerima saya apa adanya.",
+            "Ini untuk kamu, Cewe paling spesial di hidup saya. Saya cinta kamu selamanya dan akan selalu berusaha jadi yang terbaik buat kamu."
+        ];
+
+        // Variabel global
+        let currentPage = 'landing';
+        let fireworksInterval;
+        let isMusicPlaying = false;
+        let lastMessageCard = null;
+        let stopwatchInterval = null;
+        const relationshipStartDate = new Date('December 1, 2025 14:42:00').getTime();
+
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            initBackgroundEffects();
+            generateMessageCards();
+            generatePhotoGallery();
+            setLoveMessage();
+            setFinalMessage();
+            
+            // Sembunyikan tombol stopwatch saat awal
+            document.getElementById('stopwatchButton').style.display = 'none';
+            
+            // Event listener untuk tombol start
+            document.getElementById('startButton').addEventListener('click', function() {
+                changePage('valentine');
+                animateButton(this);
+                
+                // Tampilkan tombol stopwatch setelah tombol "Buka Surat" diklik
+                document.getElementById('stopwatchButton').style.display = 'inline-block';
+                
+                // Tampilkan music player
+                setTimeout(() => {
+                    document.getElementById('musicPlayer').classList.add('show');
+                }, 500);
+                
+                // Coba putar musik
+                playBackgroundMusic();
+            });
+            
+            // Event listener untuk tombol stopwatch
+            document.getElementById('stopwatchButton').addEventListener('click', function() {
+                changePage('stopwatch');
+                animateButton(this);
+            });
+            
+            // Event listener untuk tombol restart
+            document.getElementById('restartButton').addEventListener('click', function() {
+                changePage('landing');
+                animateButton(this);
+                // Sembunyikan tombol stopwatch saat kembali ke halaman awal
+                document.getElementById('stopwatchButton').style.display = 'none';
+            });
+            
+            // Event listener untuk navigasi
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    changePage(page);
+                });
+            });
+            
+            // Event listener untuk music player
+            const playBtn = document.getElementById('playBtn');
+            
+            playBtn.addEventListener('click', function() {
+                toggleMusic();
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight') nextPage();
+                if (e.key === 'ArrowLeft') prevPage();
+                if (e.key === 'Escape') changePage('landing');
+                if (e.key === ' ') { // Space untuk play/pause musik
+                    e.preventDefault();
+                    toggleMusic();
+                }
+            });
+            
+            // Interaksi untuk memulai musik
+            document.addEventListener('click', function initAudio() {
+                playBackgroundMusic();
+                document.removeEventListener('click', initAudio);
+            });
+        });
+
+        // Fungsi untuk efek background
+        function initBackgroundEffects() {
+            const bg = document.getElementById('bgEffects');
+            const icons = ['fas fa-heart', 'fas fa-star', 'fas fa-heartbeat', 'fas fa-kiss-wink-heart'];
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('i');
+                const iconClass = icons[Math.floor(Math.random() * icons.length)];
+                particle.className = iconClass + ' floating';
+                
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.fontSize = (Math.random() * 20 + 18) + 'px';
+                particle.style.color = getRandomColor();
+                particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                particle.style.filter = `blur(${Math.random() * 2}px)`;
+                
+                bg.appendChild(particle);
+            }
+        }
+
+        // Fungsi untuk generate kartu pesan (hanya ikon)
+        function generateMessageCards() {
+            const grid = document.getElementById('messageGrid');
+            
+            messagesData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'message-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <button class="message-btn">
+                        <i class="${item.icon}"></i>
+                    </button>
+                `;
+                
+                // Event listener untuk tombol
+                card.addEventListener('click', function() {
+                    showMessage(item.messages, this);
+                    animateMessageCard(this);
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Fungsi untuk generate galeri foto - PERBAIKAN: Gunakan path yang benar
+        function generatePhotoGallery() {
+            const gallery = document.getElementById('gallery');
+            
+            photosData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.innerHTML = `
+                    <img src="images/${item.filename}" alt="${item.caption}" class="photo-img" 
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22%3E%3Crect width=%22300%22 height=%22400%22 fill=%22%23ff4d6d%22/%3E%3Ctext x=%22150%22 y=%22220%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22 text-anchor=%22middle%22%3ESuci ${index + 1}%3C/text%3E%3Ctext x=%22150%22 y=%22260%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22white%22 text-anchor=%22middle%22%3E${encodeURIComponent(item.caption)}%3C/text%3E%3C/svg%3E';">
+                    <div class="photo-overlay">
+                        <p class="photo-text">${item.caption}</p>
+                    </div>
+                `;
+                
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95) rotate(-5deg)';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-12px) scale(1.03) rotate(2deg)';
+                    }, 200);
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-12px) scale(1.03) rotate(0deg)';
+                    }, 400);
+                    
+                    // Efek partikel
+                    for (let i = 0; i < 12; i++) {
+                        createPhotoParticle(this);
+                    }
+                });
+                
+                gallery.appendChild(card);
+            });
+        }
+
+        // Fungsi untuk update stopwatch
+        function updateStopwatch() {
+            const now = new Date().getTime();
+            const distance = now - relationshipStartDate;
+            
+            // Hitung hari, jam, menit, detik
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Update tampilan
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        // Fungsi untuk set pesan cinta
+        function setLoveMessage() {
+            const randomIndex = Math.floor(Math.random() * loveMessages.length);
+            document.getElementById('loveMessage').textContent = loveMessages[randomIndex];
+        }
+
+        // Fungsi untuk set pesan akhir
+        function setFinalMessage() {
+            const randomIndex = Math.floor(Math.random() * finalMessages.length);
+            document.getElementById('finalMessage').textContent = finalMessages[randomIndex];
+        }
+
+        // Fungsi untuk ganti halaman
+        function changePage(pageId) {
+            // Sembunyikan halaman aktif
+            const activePage = document.querySelector('.page.active');
+            const activeNav = document.querySelector('.nav-btn.active');
+            
+            if (activePage) {
+                activePage.classList.remove('active');
+            }
+            
+            if (activeNav) {
+                activeNav.classList.remove('active');
+            }
+            
+            // Tampilkan halaman baru
+            const newPage = document.getElementById(pageId);
+            const newNav = document.querySelector(`.nav-btn[data-page="${pageId}"]`);
+            
+            if (newPage) {
+                newPage.classList.add('active');
+            }
+            
+            if (newNav) {
+                newNav.classList.add('active');
+            }
+            
+            // Update current page
+            currentPage = pageId;
+            
+            // Kelola stopwatch
+            if (pageId === 'stopwatch') {
+                // Mulai stopwatch
+                updateStopwatch();
+                if (stopwatchInterval) {
+                    clearInterval(stopwatchInterval);
+                }
+                stopwatchInterval = setInterval(updateStopwatch, 1000);
+            } else {
+                // Hentikan stopwatch
+                if (stopwatchInterval) {
+                    clearInterval(stopwatchInterval);
+                    stopwatchInterval = null;
+                }
+            }
+            
+            // Jika halaman surprise, aktifkan kembang api
+            if (pageId === 'surprise') {
+                startFireworks();
+            } else {
+                stopFireworks();
+            }
+            
+            // Jika halaman cinta, update pesan
+            if (pageId === 'cinta') {
+                setLoveMessage();
+            }
+            
+            // Efek transisi
+            createPageTransitionEffect();
+            
+            // Scroll ke atas halaman
+            window.scrollTo(0, 0);
+        }
+
+        // Fungsi untuk kembang api
+        function startFireworks() {
+            const container = document.getElementById('fireworks');
+            stopFireworks();
+            
+            fireworksInterval = setInterval(() => {
+                createFirework(container);
+            }, 400);
+        }
+
+        function stopFireworks() {
+            if (fireworksInterval) {
+                clearInterval(fireworksInterval);
+            }
+        }
+
+        function createFirework(container) {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            firework.style.left = x + '%';
+            firework.style.top = y + '%';
+            firework.style.backgroundColor = getRandomColor();
+            firework.style.boxShadow = `0 0 15px ${firework.style.backgroundColor}`;
+            
+            container.appendChild(firework);
+            
+            const explosion = firework.animate([
+                { transform: 'scale(0)', opacity: 1 },
+                { transform: 'scale(15)', opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-out'
+            });
+            
+            explosion.onfinish = () => {
+                // Buat partikel ledakan
+                for (let i = 0; i < 12; i++) {
+                    createParticle(container, x, y);
+                }
+                firework.remove();
+            };
+        }
+
+        // Fungsi untuk partikel
+        function createParticle(container, x, y) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '5px';
+            particle.style.height = '5px';
+            particle.style.backgroundColor = getRandomColor();
+            particle.style.borderRadius = '50%';
+            particle.style.left = x + '%';
+            particle.style.top = y + '%';
+            particle.style.boxShadow = `0 0 8px ${particle.style.backgroundColor}`;
+            
+            container.appendChild(particle);
+            
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 15 + Math.random() * 30;
+            const targetX = Math.cos(angle) * distance;
+            const targetY = Math.sin(angle) * distance;
+            
+            particle.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${targetX}px, ${targetY}px)`, opacity: 0 }
+            ], {
+                duration: 700,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => particle.remove(), 700);
+        }
+
+        // Fungsi untuk partikel foto
+        function createPhotoParticle(photoCard) {
+            const rect = photoCard.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '8px';
+            particle.style.height = '8px';
+            particle.style.backgroundColor = getRandomColor();
+            particle.style.borderRadius = '50%';
+            particle.style.left = centerX + 'px';
+            particle.style.top = centerY + 'px';
+            particle.style.zIndex = '100';
+            particle.style.boxShadow = `0 0 12px ${particle.style.backgroundColor}`;
+            
+            document.body.appendChild(particle);
+            
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 30 + Math.random() * 80;
+            const targetX = Math.cos(angle) * distance;
+            const targetY = Math.sin(angle) * distance;
+            
+            particle.animate([
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                { transform: `translate(${targetX}px, ${targetY}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 800,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => particle.remove(), 800);
+        }
+
+        // Fungsi untuk partikel pesan
+        function createMessageParticles(card) {
+            const rect = card.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.width = '6px';
+                particle.style.height = '6px';
+                particle.style.backgroundColor = getRandomColor();
+                particle.style.borderRadius = '50%';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.zIndex = '100';
+                particle.style.boxShadow = `0 0 8px ${particle.style.backgroundColor}`;
+                
+                document.body.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 25 + Math.random() * 60;
+                const targetX = Math.cos(angle) * distance;
+                const targetY = Math.sin(angle) * distance;
+                
+                particle.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: `translate(${targetX}px, ${targetY}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 700,
+                    easing: 'ease-out'
+                });
+                
+                setTimeout(() => particle.remove(), 700);
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan
+        function showMessage(messages, card) {
+            // Hapus pesan yang sudah ada di card ini
+            const existingDisplay = card.querySelector('.message-display');
+            if (existingDisplay) {
+                existingDisplay.remove();
+            }
+            
+            // Hapus pesan dari card lain
+            document.querySelectorAll('.message-display').forEach(display => {
+                if (!display.parentElement.isSameNode(card)) {
+                    display.remove();
+                }
+            });
+            
+            // Pilih pesan random
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const message = messages[randomIndex];
+            
+            // Buat display pesan
+            const display = document.createElement('div');
+            display.className = 'message-display';
+            display.innerHTML = `<p class="message-content">${message}</p>`;
+            display.style.display = 'block';
+            
+            // Tambahkan display pesan setelah card
+            card.parentNode.insertBefore(display, card.nextSibling);
+            
+            // Efek partikel
+            createMessageParticles(card);
+            
+            // Update last message card
+            lastMessageCard = card;
+        }
+
+        // Fungsi untuk animasi kartu pesan
+        function animateMessageCard(card) {
+            card.style.transform = 'translateY(-12px) rotate(5deg) scale(1.1)';
+            
+            setTimeout(() => {
+                card.style.transform = 'translateY(-8px) rotate(3deg) scale(1.05)';
+            }, 200);
+            
+            setTimeout(() => {
+                card.style.transform = 'translateY(-8px) rotate(0deg) scale(1.05)';
+            }, 400);
+        }
+
+        // Fungsi untuk animasi tombol
+        function animateButton(button) {
+            button.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Fungsi untuk efek transisi halaman
+        function createPageTransitionEffect() {
+            const flash = document.createElement('div');
+            flash.style.position = 'fixed';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.width = '100%';
+            flash.style.height = '100%';
+            flash.style.background = `linear-gradient(135deg, ${getRandomColor()}, ${getRandomColor()})`;
+            flash.style.opacity = '0';
+            flash.style.zIndex = '999';
+            flash.style.pointerEvents = 'none';
+            
+            document.body.appendChild(flash);
+            
+            flash.animate([
+                { opacity: 0 },
+                { opacity: 0.6 },
+                { opacity: 0 }
+            ], {
+                duration: 700,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => flash.remove(), 700);
+        }
+
+        // Fungsi untuk musik
+        function playBackgroundMusic() {
+            const audio = document.getElementById('backgroundMusic');
+            const playBtn = document.getElementById('playBtn');
+            const playIcon = playBtn.querySelector('i');
+            
+            if (!isMusicPlaying) {
+                audio.play().then(() => {
+                    isMusicPlaying = true;
+                    playIcon.className = 'fas fa-pause';
+                }).catch(e => {
+                    console.log("Autoplay prevented");
+                });
+            }
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('backgroundMusic');
+            const playBtn = document.getElementById('playBtn');
+            const playIcon = playBtn.querySelector('i');
+            
+            if (isMusicPlaying) {
+                audio.pause();
+                playIcon.className = 'fas fa-play';
+                isMusicPlaying = false;
+            } else {
+                audio.play();
+                playIcon.className = 'fas fa-pause';
+                isMusicPlaying = true;
+            }
+        }
+
+        // Fungsi untuk warna random
+        function getRandomColor() {
+            const colors = ['#ff4d6d', '#ff8fa3', '#ffccd5', '#ff3366', '#ff6699', '#ff99cc', '#ffb3d9', '#4d94ff', '#66b3ff'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Fungsi navigasi
+        function nextPage() {
+            const pages = ['landing', 'valentine', 'kata', 'foto', 'cinta', 'stopwatch', 'surprise'];
+            const currentIndex = pages.indexOf(currentPage);
+            const nextIndex = (currentIndex + 1) % pages.length;
+            changePage(pages[nextIndex]);
+        }
+
+        function prevPage() {
+            const pages = ['landing', 'valentine', 'kata', 'foto', 'cinta', 'stopwatch', 'surprise'];
+            const currentIndex = pages.indexOf(currentPage);
+            const prevIndex = (currentIndex - 1 + pages.length) % pages.length;
+            changePage(pages[prevIndex]);
+        }
+    </script>
+</body>
+</html>
